@@ -1,0 +1,29 @@
+//============================================================================
+// Name        : SSSMarketApplication.cpp
+// Author      : David Ashford
+// Version     :
+//============================================================================
+#include "StockMarket.h"
+
+#include <string>
+#include <iostream>
+using namespace std;
+
+int main()
+{
+	bool exit = false;
+	int option;
+
+	while(!exit)
+	{
+		cin >> option;
+
+		switch(option)
+		{
+		case 0: exit = true; break;
+		}
+	}
+
+
+	return 0;
+}

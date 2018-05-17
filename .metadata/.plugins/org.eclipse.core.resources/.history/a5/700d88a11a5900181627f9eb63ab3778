@@ -1,0 +1,66 @@
+#include "StockMarket.h"
+
+#include <iostream>
+using namespace std;
+
+StockMarket::StockMarket()
+{
+}
+
+StockMarket::~StockMarket()
+{
+	for(unsigned i=0; i< _stock_market_data.size(); i++)
+	{
+		delete _stock_market_data[i];
+	}
+	_stock_market_data.clear();
+
+	for(unsigned i=0; i< _market_trading.size(); i++)
+	{
+		delete _market_trading[i];
+	}
+	_market_trading.clear();
+}
+
+int StockMarket::CreateStockMarketData(void)
+{
+	_stock_market_data.push_back(new Stocks("TEA", Stocks::COMMON, 0, 0, 100));
+	_stock_market_data.push_back(new Stocks("POP", Stocks::COMMON, 8, 0, 100));
+	_stock_market_data.push_back(new Stocks("ALE", Stocks::COMMON, 23, 0, 60));
+	_stock_market_data.push_back(new Stocks("GIN", Stocks::PREFERRED, 8, 2, 100));
+	_stock_market_data.push_back(new Stocks("JOE", Stocks::COMMON, 13, 0, 250));
+
+	return _stock_market_data.size();
+}
+
+int StockMarket::GetMarketTradingNumber(void)
+{
+	return _market_trading.size();
+}
+
+void StockMarket::RecordTrade(StockMarket::StockTrade* trade)
+{
+	if (trade != NULL)
+	{
+		_market_trading.push_back(trade);
+	}
+}
+
+void StockMarket::PrintAllTradesToConsole(void)
+{
+	for(unsigned i=0; i<_market_trading.size(); i++)
+	{
+		cout<<endl<<"Symbol "<<_market_trading.at(i)->_sym << endl;
+		cout<<"Time "<<_market_trading.at(i)->_time << endl;
+		cout<<"Quantity "<<_market_trading.at(i)->_quantity << endl;
+		cout<<"Kind "<<_market_trading.at(i)->_kind << endl;
+		cout<<"Price "<<_market_trading.at(i)->_price << endl;
+	}
+}
+
+bool StockMarket::StockTradeValid(StockTrade* trade)
+{
+	bool trade_valid = false;
+
+	return trade_valid;
+}

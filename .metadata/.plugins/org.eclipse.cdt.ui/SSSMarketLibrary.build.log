@@ -1,0 +1,7 @@
+15:30:56 **** Clean-only build of configuration Debug for project SSSMarketLibrary ****
+make clean 
+rm -rf  ./StockMarket.o ./Stocks.o  ./StockMarket.d ./Stocks.d  libSSSMarketLibrary.a
+ 
+
+15:30:56 Build Finished (took 153ms)
+

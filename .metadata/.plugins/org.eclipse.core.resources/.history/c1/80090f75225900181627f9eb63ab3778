@@ -1,0 +1,18 @@
+//============================================================================
+// Name        : SSSMarketApplication.cpp
+// Author      : David Ashford
+// Version     :
+//============================================================================
+#include "StockMarket.h"
+
+#include <iostream>
+using namespace std;
+
+int main()
+{
+	char option;
+	cin >> option;
+
+	cout << option << endl;
+	return 0;
+}

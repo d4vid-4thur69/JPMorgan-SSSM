@@ -1,0 +1,60 @@
+//============================================================================
+// Name        : SSSMarketApplication.cpp
+// Author      : David Ashford
+// Version     :
+//============================================================================
+#include "StockMarket.h"
+
+#include <string>
+#include <iostream>
+using namespace std;
+
+void DisplayOptions();
+
+int main()
+{
+	bool exit = false;
+	int option;
+
+	DisplayOptions();
+	void AddTrade();
+
+
+	while(!exit)
+	{
+		cin >> option;
+		cout << "\x1B[2J\x1B[H";
+
+		switch(option)
+		{
+		case 0: exit = true; break;
+		case 1: AddTrade(); break;
+		case 2: exit = true; break;
+		case 3: exit = true; break;
+		case 4: exit = true; break;
+		}
+	}
+
+	return 0;
+}
+
+void DisplayOptions()
+{
+	cout << "Main Menu\n";
+	cout << "Select option\n";
+	cout << "0 - exit\n";
+	cout << "1 - Add Trade\n";
+	cout << "2 - View trades\n";
+	cout << "3 - Display Dividend Yield\n";
+	cout << "4 - Display P/E Ratio\n";
+}
+
+void AddTrade()
+{
+	string symbol;
+	cout << "Add Trade Menu\n";
+	cout << "Enter Stock Symbol: "; cin >> symbol;
+
+
+
+}

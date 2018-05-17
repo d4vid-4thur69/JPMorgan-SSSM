@@ -1,0 +1,7 @@
+13:00:09 **** Clean-only build of configuration Debug for project TestSSSMarket ****
+make clean 
+rm -rf  ./StockMarketTest.o ./StocksTest.o ./runtests.o  ./StockMarketTest.d ./StocksTest.d ./runtests.d  TestSSSMarket
+ 
+
+13:00:10 Build Finished (took 107ms)
+

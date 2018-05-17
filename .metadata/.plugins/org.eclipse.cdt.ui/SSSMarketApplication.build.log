@@ -1,0 +1,7 @@
+13:00:12 **** Clean-only build of configuration Debug for project SSSMarketApplication ****
+make clean 
+rm -rf  ./src/SSSMarketApplication.o  ./src/SSSMarketApplication.d  SSSMarketApplication
+ 
+
+13:00:12 Build Finished (took 110ms)
+
