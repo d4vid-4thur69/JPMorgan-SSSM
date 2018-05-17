@@ -72,23 +72,21 @@ TEST(StockMarket, StockTradeValid)
 
 TEST(StockMarket, Calculate_VWSP)
 {
-	time_t timer;
-
 	stockMarket->CreateStockMarketData();
 
 	StockMarket::StockTrade* trade = new StockMarket::StockTrade("TEA", 1526570001, 20, StockMarket::BUY, 10);
 	stockMarket->RecordTrade(trade);
 
-	trade = new StockMarket::StockTrade("TEA", 1526570001, 30, StockMarket::BUY, 5);
+	trade = new StockMarket::StockTrade("TEA", 1526570016, 30, StockMarket::BUY, 5);
 	stockMarket->RecordTrade(trade);
 
-	trade = new StockMarket::StockTrade("GIN", 1526570001, 5, StockMarket::BUY, 15);
+	trade = new StockMarket::StockTrade("GIN", 1526570017, 5, StockMarket::BUY, 15);
 	stockMarket->RecordTrade(trade);
 
-	trade = new StockMarket::StockTrade("JOE", 1526570002, 20, StockMarket::BUY, 20);
+	trade = new StockMarket::StockTrade("JOE", 1526570018, 20, StockMarket::BUY, 20);
 	stockMarket->RecordTrade(trade);
 
-	trade = new StockMarket::StockTrade("JOE", 1526570102, 20, StockMarket::BUY, 5);
+	trade = new StockMarket::StockTrade("JOE", 1526570019, 20, StockMarket::BUY, 5);
 	stockMarket->RecordTrade(trade);
 
 	trade = new StockMarket::StockTrade("TEA", 1526570112, 2, StockMarket::BUY, 100);
@@ -97,7 +95,37 @@ TEST(StockMarket, Calculate_VWSP)
 	trade = new StockMarket::StockTrade("JOE", 1526570217, 5, StockMarket::BUY, 50);
 	stockMarket->RecordTrade(trade);
 
-	DOUBLES_EQUAL(10.576923, stockMarket->CalculateVWSP("TEA",1526570300,300), Value_Tolerance);
+	DOUBLES_EQUAL(10.9375, stockMarket->CalculateVWSP("TEA",1526570310,300), Value_Tolerance);
 	DOUBLES_EQUAL(16.666666, stockMarket->CalculateVWSP("JOE",1526570300,300), Value_Tolerance);
 	DOUBLES_EQUAL(15.0, stockMarket->CalculateVWSP("GIN",1526570300,300), Value_Tolerance);
+
+	DOUBLES_EQUAL(10.576923, stockMarket->CalculateVWSP("TEA",0,0), Value_Tolerance);
+}
+
+TEST(StockMarket, All_Share_Index)
+{
+	stockMarket->CreateStockMarketData();
+
+	StockMarket::StockTrade* trade = new StockMarket::StockTrade("TEA", 1526570001, 10, StockMarket::BUY, 5);
+	stockMarket->RecordTrade(trade);
+
+	trade = new StockMarket::StockTrade("TEA", 1526570016, 10, StockMarket::BUY, 10);
+	stockMarket->RecordTrade(trade);
+
+	trade = new StockMarket::StockTrade("TEA", 1526570017, 20, StockMarket::BUY, 5);
+	stockMarket->RecordTrade(trade);
+
+	trade = new StockMarket::StockTrade("GIN", 1526570001, 10, StockMarket::BUY, 5);
+	stockMarket->RecordTrade(trade);
+
+	trade = new StockMarket::StockTrade("GIN", 1526570016, 10, StockMarket::BUY, 10);
+	stockMarket->RecordTrade(trade);
+
+	trade = new StockMarket::StockTrade("GIN", 1526570017, 20, StockMarket::BUY, 5);
+	stockMarket->RecordTrade(trade);
+
+	DOUBLES_EQUAL(6.25, stockMarket->CalculateVWSP("TEA",0), Value_Tolerance);
+	DOUBLES_EQUAL(6.25, stockMarket->CalculateVWSP("GIN",0), Value_Tolerance);
+	DOUBLES_EQUAL(6.25, stockMarket->CalculateAllShareIndex(), Value_Tolerance);
+
 }

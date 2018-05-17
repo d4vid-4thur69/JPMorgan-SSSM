@@ -3,6 +3,8 @@
 #include <iostream>
 #include <ctime>
 #include <numeric>
+#include <cmath>
+
 using namespace std;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -119,6 +121,11 @@ void StockMarket::PrintAllTradesToConsole(void)
 	}
 }
 
+///////////////////////////////////////////////////////////////////////////////
+//
+//  print trades
+//
+///////////////////////////////////////////////////////////////////////////////
 void StockMarket::PrintSubsettradesToConsole(vector<StockTrade*>* sub)
 {
 	cout<<endl;
@@ -132,6 +139,12 @@ void StockMarket::PrintSubsettradesToConsole(vector<StockTrade*>* sub)
 	}
 }
 
+///////////////////////////////////////////////////////////////////////////////
+//
+//  return volume weighted stock price for selected stock and time window
+//	use requested_time=0 for all trades
+//
+///////////////////////////////////////////////////////////////////////////////
 double StockMarket::CalculateVWSP(string symbol, time_t request_time, int period)
 {
 	double VWSP = 0;
@@ -142,11 +155,20 @@ double StockMarket::CalculateVWSP(string symbol, time_t request_time, int period
 
 	while(it_market_trading != _market_trading.end())
 	{
-		// de-referrence iterator to check symbol string
-		if( (symbol== ((StockTrade*) *it_market_trading)->_sym)
-			&& (request_time -((StockTrade*) *it_market_trading)->_time) < period )
+		if( request_time != 0 )
 		{
-			trading_by_symbol.push_back((StockTrade*) *it_market_trading);
+			if( (symbol== ((StockTrade*) *it_market_trading)->_sym)
+				&& (request_time -((StockTrade*) *it_market_trading)->_time) < period )
+			{
+				trading_by_symbol.push_back((StockTrade*) *it_market_trading);
+			}
+		}
+		else
+		{
+			if( (symbol== ((StockTrade*) *it_market_trading)->_sym) )
+			{
+				trading_by_symbol.push_back((StockTrade*) *it_market_trading);
+			}
 		}
 		it_market_trading++;
 	}
@@ -170,4 +192,42 @@ double StockMarket::CalculateVWSP(string symbol, time_t request_time, int period
 	}
 
 	return VWSP;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  return all share index, uses all trades
+//
+///////////////////////////////////////////////////////////////////////////////
+double StockMarket::CalculateAllShareIndex(void)
+{
+	double all_share_index = 0;
+	string stock_symbol;
+
+	vector<double> volume_weighted_sp;
+
+	vector<Stocks*>::iterator it_stocks =  _stock_market_data.begin();
+
+	while(it_stocks != _stock_market_data.end())
+	{
+		stock_symbol = ((Stocks*) *it_stocks)->GetSymbol();
+
+		double stock_vwsp = CalculateVWSP(stock_symbol, 0, 0);
+
+		if(stock_vwsp!=0)
+		{
+			volume_weighted_sp.push_back(stock_vwsp);
+		}
+
+		it_stocks++;
+	}
+
+	cout << "Size double: " << volume_weighted_sp.size() << endl;
+	cout << "TEA: " << volume_weighted_sp.at(0) << endl;
+	cout << "GIN: " << volume_weighted_sp.at(1) << endl;
+
+	all_share_index = accumulate(volume_weighted_sp.begin(), volume_weighted_sp.end(), 1.0, multiplies<double>());
+	all_share_index = pow(all_share_index, 1.0/volume_weighted_sp.size());
+
+	return all_share_index;
 }
