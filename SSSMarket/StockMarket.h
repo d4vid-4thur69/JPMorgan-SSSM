@@ -50,9 +50,10 @@ public:
 	int CreateStockMarketData(void);
 	int GetMarketTradingNumber(void);
 	void RecordTrade(StockTrade* trade);
-	double CalcluateVolumeWeightedStockPrice();
+	double CalculateVWSP(string symbol, time_t request_time, int period);
 
 	void PrintAllTradesToConsole(void);
+	void PrintSubsettradesToConsole(vector<StockTrade*>* sub);
 };
 
 #endif  // D_StockMarket_H

@@ -1,6 +1,8 @@
 #include "StockMarket.h"
 
 #include <iostream>
+#include <ctime>
+#include <numeric>
 using namespace std;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -117,15 +119,55 @@ void StockMarket::PrintAllTradesToConsole(void)
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
-//  a biggie
-//
-///////////////////////////////////////////////////////////////////////////////
-double CalcluateVolumeWeightedStockPrice()
+void StockMarket::PrintSubsettradesToConsole(vector<StockTrade*>* sub)
 {
-	double volumeWSP = 0.0;
-
-	return volumeWSP;
+	cout<<endl;
+	for(unsigned i=0; i<_market_trading.size(); i++)
+	{
+		cout<<sub->at(i)->_sym << "\t";
+		cout<<sub->at(i)->_time << "\t";
+		cout<<sub->at(i)->_quantity << "\t";
+		cout<<sub->at(i)->_kind << "\t";
+		cout<<sub->at(i)->_price<<endl;
+	}
 }
 
+double StockMarket::CalculateVWSP(string symbol, time_t request_time, int period)
+{
+	double VWSP = 0;
+	int sum_trade_by_quantity = 0;
+	int sum_quantity = 1;
+	vector<StockTrade*> trading_by_symbol;
+	vector<StockTrade*>::iterator it_market_trading =  _market_trading.begin();
+
+	while(it_market_trading != _market_trading.end())
+	{
+		// de-referrence iterator to check symbol string
+		if( (symbol== ((StockTrade*) *it_market_trading)->_sym)
+			&& (request_time -((StockTrade*) *it_market_trading)->_time) < period )
+		{
+			trading_by_symbol.push_back((StockTrade*) *it_market_trading);
+		}
+		it_market_trading++;
+	}
+
+	unsigned symbol_trades = trading_by_symbol.size();
+
+	if(symbol_trades>0)
+	{
+		sum_quantity = 0;
+
+		for(unsigned i=0; i<symbol_trades; i++)
+		{
+			sum_trade_by_quantity += (trading_by_symbol.at(i)->_price * trading_by_symbol.at(i)->_quantity);
+			sum_quantity += trading_by_symbol.at(i)->_quantity;
+		}
+
+		if( sum_trade_by_quantity > 0 )
+		{
+			VWSP = (double)sum_trade_by_quantity/sum_quantity;
+		}
+	}
+
+	return VWSP;
+}

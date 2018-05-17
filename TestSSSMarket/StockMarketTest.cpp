@@ -5,6 +5,8 @@
 //CppUTest includes should be after your and system includes
 #include "CppUTest/TestHarness.h"
 
+const double Value_Tolerance = 0.000001;
+
 TEST_GROUP(StockMarket)
 {
 	StockMarket* stockMarket;
@@ -25,10 +27,6 @@ TEST(StockMarket, CreateStockMarketData)
 	LONGS_EQUAL(5, stocks);
 }
 
-TEST(StockMarket, GetNumberTrades)
-{
-	LONGS_EQUAL(0, stockMarket->GetMarketTradingNumber());
-}
 
 TEST(StockMarket, RecordTrade)
 {
@@ -67,12 +65,39 @@ TEST(StockMarket, StockTradeValid)
 	// Valid stock symbol
 	trade = new StockMarket::StockTrade("ALE", time(&timer), 200, StockMarket::BUY, 80);
 	stockMarket->RecordTrade(trade);
-	LONGS_EQUAL(1, stockMarket->GetMarketTradingNumber());
+	trade = new StockMarket::StockTrade("JOE", time(&timer), 200, StockMarket::BUY, 80);
+	stockMarket->RecordTrade(trade);
+	LONGS_EQUAL(2, stockMarket->GetMarketTradingNumber());
 }
 
-TEST(StockMarket, CalculateVWSP)
+TEST(StockMarket, Calculate_VWSP)
 {
-	FAIL("VWSP");
+	time_t timer;
+
+	stockMarket->CreateStockMarketData();
+
+	StockMarket::StockTrade* trade = new StockMarket::StockTrade("TEA", 1526570001, 20, StockMarket::BUY, 10);
+	stockMarket->RecordTrade(trade);
+
+	trade = new StockMarket::StockTrade("TEA", 1526570001, 30, StockMarket::BUY, 5);
+	stockMarket->RecordTrade(trade);
+
+	trade = new StockMarket::StockTrade("GIN", 1526570001, 5, StockMarket::BUY, 15);
+	stockMarket->RecordTrade(trade);
+
+	trade = new StockMarket::StockTrade("JOE", 1526570002, 20, StockMarket::BUY, 20);
+	stockMarket->RecordTrade(trade);
+
+	trade = new StockMarket::StockTrade("JOE", 1526570102, 20, StockMarket::BUY, 5);
+	stockMarket->RecordTrade(trade);
+
+	trade = new StockMarket::StockTrade("TEA", 1526570112, 2, StockMarket::BUY, 100);
+	stockMarket->RecordTrade(trade);
+
+	trade = new StockMarket::StockTrade("JOE", 1526570217, 5, StockMarket::BUY, 50);
+	stockMarket->RecordTrade(trade);
+
+	DOUBLES_EQUAL(10.576923, stockMarket->CalculateVWSP("TEA",1526570300,300), Value_Tolerance);
+	DOUBLES_EQUAL(16.666666, stockMarket->CalculateVWSP("JOE",1526570300,300), Value_Tolerance);
+	DOUBLES_EQUAL(15.0, stockMarket->CalculateVWSP("GIN",1526570300,300), Value_Tolerance);
 }
-
-

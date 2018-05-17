@@ -9,15 +9,15 @@
 #include <iostream>
 using namespace std;
 
-void DisplayOptions();
+void DisplayOptions(void);
 void AddTrade(StockMarket* market);
+void DisplayVWSP(StockMarket* market);
+void ViewTrades(StockMarket* market);
 
-int main()
+int main(void)
 {
 	bool exit = false;
 	int option;
-	time_t market_timer;
-	struct tm* timeinfo;
 
 	StockMarket* market = new StockMarket();
 	market->CreateStockMarketData();
@@ -26,26 +26,23 @@ int main()
 
 	while(!exit)
 	{
+		cout<<"Option: ";
 		cin >> option;
 
 		switch(option)
 		{
 		case 0: exit = true; break;
 		case 1: AddTrade(market); break;
-		case 2: exit = true; break;
-		case 3: exit = true; break;
+		case 2: ViewTrades(market); break;
+		case 3: DisplayVWSP(market); break;
 		case 4: exit = true; break;
 		}
-
-		time(&market_timer);
-		timeinfo = localtime (&market_timer);
-		cout << timeinfo->tm_hour<< timeinfo->tm_min <<timeinfo->tm_sec;
 	}
 
 	return 0;
 }
 
-void DisplayOptions()
+void DisplayOptions(void)
 {
 	cout << endl;
 	cout << "Main Menu\n";
@@ -53,10 +50,8 @@ void DisplayOptions()
 	cout << "0 - exit\n";
 	cout << "1 - Add Trade\n";
 	cout << "2 - View trades\n";
-	cout << "3 - Display Dividend Yield\n";
-	cout << "4 - Display P/E Ratio\n";
-	cout << "5 - Display Volume Weighted Stock Price\n";
-	cout << "6 - Display All share Index\n";
+	cout << "3 - Display Volume Weighted Stock Price\n";
+	cout << "4 - Display All share Index\n";
 	cout << endl;
 }
 
@@ -84,6 +79,30 @@ void AddTrade(StockMarket* market)
 	StockMarket::StockTrade* trade = new StockMarket::StockTrade(symbol, time(&timer), quantity, trade_type, price);
 	market->RecordTrade(trade);
 
+	market->PrintAllTradesToConsole();
+
+	DisplayOptions();
+}
+
+void DisplayVWSP(StockMarket* market)
+{
+	string symbol;
+	int seconds;
+	time_t timer;
+
+	cout << "Volume Weighted Stock Price Menu\n";
+	cout << "Enter Stock Symbol: "; cin >> symbol;
+	cout << "Enter Window (Seconds): "; cin >> seconds;
+
+	double VWSP = market->CalculateVWSP(symbol, time(&timer), seconds);
+
+	cout << "Currently: " << VWSP << endl;
+
+	DisplayOptions();
+}
+
+void ViewTrades(StockMarket* market)
+{
 	market->PrintAllTradesToConsole();
 
 	DisplayOptions();
