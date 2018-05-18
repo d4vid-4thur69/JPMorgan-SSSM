@@ -2,6 +2,7 @@
 
 #include <ctime>
 
+
 //CppUTest includes should be after your and system includes
 #include "CppUTest/TestHarness.h"
 
@@ -127,3 +128,4 @@ TEST(StockMarket, All_Share_Index)
 
 	DOUBLES_EQUAL(6.25, stockMarket->CalculateAllShareIndex(), Value_Tolerance);
 }
+

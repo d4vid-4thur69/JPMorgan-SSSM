@@ -1,6 +1,8 @@
 #include "Stocks.h"
 
 #include <string>
+#include <stdexcept>
+#include <iostream>
 
 //CppUTest includes should be after your and system includes
 #include "CppUTest/TestHarness.h"
@@ -47,7 +49,7 @@ TEST_GROUP(Stocks_Common)
 
   void setup()
   {
-    stocks = new Stocks(Smb_Common, Stocks::COMMON, Comm_L_Dividend, Comm_F_Dividend, Comm_P_Value);
+    stocks = new Stocks(Smb_Common, 0, Comm_L_Dividend, Comm_F_Dividend, Comm_P_Value);
   }
   void teardown()
   {
@@ -101,7 +103,7 @@ TEST_GROUP(Stocks_Preferred)
 
   void setup()
   {
-    stocks = new Stocks(Smb_Preferred, Stocks::PREFERRED, Pref_L_Dividend, Pref_F_Dividend, Pref_P_Value);
+    stocks = new Stocks(Smb_Preferred, 1, Pref_L_Dividend, Pref_F_Dividend, Pref_P_Value);
   }
   void teardown()
   {
@@ -136,4 +138,36 @@ TEST(Stocks_Preferred, CalculateDividendYield)
 	DOUBLES_EQUAL(Pref_Div_Yield_4, stocks->CalculateDividendYield(Price_4), Value_Tolerance);
 	DOUBLES_EQUAL(Pref_Div_Yield_5, stocks->CalculateDividendYield(Price_5), Value_Tolerance);
 	DOUBLES_EQUAL(Pref_Div_Yield_6, stocks->CalculateDividendYield(Price_6), Value_Tolerance);
+}
+
+TEST_GROUP(Stocks_Runtime)
+{
+  void setup()
+  {
+
+  }
+  void teardown()
+  {
+
+  }
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  constructor arguments range check
+//
+//////////////////////////////////////////////////////////////////////////////
+TEST(Stocks_Runtime, OutOfRange)
+{
+	CHECK_THROWS(out_of_range, new Stocks("ALE", 2, 0, 0, 0) );
+	CHECK_THROWS(out_of_range, new Stocks("ALE", -1, 0, 0, 0) );
+
+	CHECK_THROWS(out_of_range, new Stocks("ALE", 0, Stocks::Maximum_Last_Dividend+1, 0, 0) );
+	CHECK_THROWS(out_of_range, new Stocks("ALE", 0, -1, 100, 100) );
+
+	CHECK_THROWS(out_of_range, new Stocks("ALE", 0, 0, Stocks::Maximum_Fixed_Dividend+1, 0) );
+	CHECK_THROWS(out_of_range, new Stocks("ALE", 0, 0, -1, 100) );
+
+	CHECK_THROWS(out_of_range, new Stocks("ALE", 0, 0, 0, Stocks::Maximum_Par_Value+1) );
+	CHECK_THROWS(out_of_range, new Stocks("ALE", 0, 0, 0, -1) );
 }

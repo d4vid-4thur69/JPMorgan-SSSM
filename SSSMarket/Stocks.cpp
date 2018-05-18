@@ -2,16 +2,45 @@
 
 #include <cmath>
 #include <iostream>
+#include <stdexcept>
+
+using namespace std;
 
 ///////////////////////////////////////////////////////////////////////////////
 //
 //  constructor
 //
 ///////////////////////////////////////////////////////////////////////////////
-Stocks::Stocks(string symbol, StockType type, int ldividend, int fdividend, int pvalue)
+Stocks::Stocks(string symbol, int type, int ldividend, int fdividend, int pvalue)
 {
+	if(type>PREFERRED || type<0)
+	{
+		throw out_of_range("_stock_type out of range");
+	}
+
+	if(ldividend>Maximum_Last_Dividend || ldividend<0)
+	{
+		throw out_of_range("_last_dividend out of range");
+	}
+
+	if(fdividend>Maximum_Fixed_Dividend || fdividend<0)
+	{
+		throw out_of_range("_fixed_dividend out of range");
+	}
+
+	if(pvalue>Maximum_Par_Value || pvalue<0)
+	{
+		throw out_of_range("_par_value out of range");
+	}
+
 	_symbol=symbol;
-	_stock_type=type;
+
+	switch(type)
+	{
+	case 0: _stock_type = COMMON; break;
+	case 1: _stock_type = PREFERRED; break;
+	}
+
 	_last_dividend=ldividend;
 	_fixed_dividend=fdividend;
 	_par_value=pvalue;
@@ -71,7 +100,7 @@ double Stocks::CalculateDividendYield(int price)
 {
 	double dy = 0.0;
 
-	// Price cannot be zero, others assume can be any positive value
+	// Price cannot be zero
 	if(price>0 &&_last_dividend>-1 &&_fixed_dividend>-1 && _par_value>-1)
 	{
 		switch(_stock_type)

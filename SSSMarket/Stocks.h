@@ -13,12 +13,18 @@ using namespace std;
 class Stocks
 {
 public:
-	static const int Maximum_Price_Input	= 2147483647;
-	static const int Maximum_Transaction_Input	= 2147483647;
-	static const int Maximum_General_Input	= 2147483647;
 
-	enum StockType{COMMON, PREFERRED, LAST};
-	Stocks(string symbol="", StockType type=COMMON, int ldividend=0, int fdividend=0, int pvalue=100);
+	// Setting all to same value
+	static const int Maximum_Price_Input	= 100000000;
+	static const int Maximum_Transaction_Input	= 100000000;
+	static const int Maximum_Last_Dividend	= 100000000;
+
+	// Numerator of a percentage
+	static const int Maximum_Fixed_Dividend	= 100000000;
+	static const int Maximum_Par_Value	= 100000000;
+
+	enum StockType{COMMON, PREFERRED};
+	Stocks(string symbol="", int type=COMMON, int ldividend=0, int fdividend=0, int pvalue=100);
 
 private:
 	string _symbol;
