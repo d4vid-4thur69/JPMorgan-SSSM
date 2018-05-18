@@ -21,8 +21,8 @@ const int Price_1 = 0;
 const int Price_2 = -1;
 const double Comm_Div_Yield_Special = 0.0;
 
-const int Price_3 = 123;
-const int Price_4 = 2334234;
+const int Price_3 = 1;
+const int Price_4 = Stocks::Maximum_Price_Input-1;
 const int Price_5 = 10000000;
 const int Price_6 = Stocks::Maximum_Price_Input;
 
@@ -76,6 +76,11 @@ TEST(Stocks_Create, OutOfRange)
 	CHECK_THROWS(out_of_range, new Stocks("ALE", 0, 0, 0, -1) );
 }
 
+///////////////////////////////////////////////////////////////////////////////
+//
+//  create common stock
+//
+//////////////////////////////////////////////////////////////////////////////
 TEST_GROUP(Stocks_Common)
 {
   Stocks* stocks;
@@ -133,6 +138,12 @@ TEST(Stocks_Common, CalculatePERatio)
 	CHECK_THROWS(out_of_range, stocks->CalculatePERatio(Price_2));
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  create preferred stock
+//
+//////////////////////////////////////////////////////////////////////////////
 TEST_GROUP(Stocks_Preferred)
 {
   Stocks* stocks;
