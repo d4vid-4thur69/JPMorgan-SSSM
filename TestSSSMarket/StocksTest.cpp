@@ -22,7 +22,7 @@ const double Comm_Div_Yield_Special = 0.0;
 const int Price_3 = 123;
 const int Price_4 = 2334234;
 const int Price_5 = 10000000;
-const int Price_6 = Stocks::Maximum_Price;
+const int Price_6 = Stocks::Maximum_Price_Input;
 
 const double Comm_Div_Yield_3	= (double)Comm_L_Dividend/Price_3;
 const double Comm_Div_Yield_4	= (double)Comm_L_Dividend/Price_4;

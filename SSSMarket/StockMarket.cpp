@@ -201,17 +201,19 @@ double StockMarket::CalculateVWSP(string symbol, time_t request_time, int period
 ///////////////////////////////////////////////////////////////////////////////
 double StockMarket::CalculateAllShareIndex(void)
 {
-	double all_share_index = 0;
+	double all_share_index = 0.0;
 	string stock_symbol;
 
 	vector<double> volume_weighted_sp;
 
 	vector<Stocks*>::iterator it_stocks =  _stock_market_data.begin();
 
+	// For each valid stock symbol, calculate Volume Weighted Stock Price
 	while(it_stocks != _stock_market_data.end())
 	{
 		stock_symbol = ((Stocks*) *it_stocks)->GetSymbol();
 
+		// All trades of stock type are factored into calculation when second argument is zero.
 		double stock_vwsp = CalculateVWSP(stock_symbol, 0, 0);
 
 		if(stock_vwsp!=0)
@@ -222,12 +224,16 @@ double StockMarket::CalculateAllShareIndex(void)
 		it_stocks++;
 	}
 
-	cout << "Size double: " << volume_weighted_sp.size() << endl;
-	cout << "TEA: " << volume_weighted_sp.at(0) << endl;
-	cout << "GIN: " << volume_weighted_sp.at(1) << endl;
-
-	all_share_index = accumulate(volume_weighted_sp.begin(), volume_weighted_sp.end(), 1.0, multiplies<double>());
-	all_share_index = pow(all_share_index, 1.0/volume_weighted_sp.size());
+	// Require at least two Volume Weighted Stock Prices for accumulate()
+	if(volume_weighted_sp.size()>1)
+	{
+		all_share_index = accumulate(volume_weighted_sp.begin(), volume_weighted_sp.end(), 1.0, multiplies<double>());
+		all_share_index = pow(all_share_index, 1.0/volume_weighted_sp.size());
+	}
+	else if (volume_weighted_sp.size()==1)
+	{
+		all_share_index = volume_weighted_sp.at(0);
+	}
 
 	return all_share_index;
 }

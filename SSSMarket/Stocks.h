@@ -13,7 +13,10 @@ using namespace std;
 class Stocks
 {
 public:
-	static const int Maximum_Price	= 2147483647;
+	static const int Maximum_Price_Input	= 2147483647;
+	static const int Maximum_Transaction_Input	= 2147483647;
+	static const int Maximum_General_Input	= 2147483647;
+
 	enum StockType{COMMON, PREFERRED, LAST};
 	Stocks(string symbol="", StockType type=COMMON, int ldividend=0, int fdividend=0, int pvalue=100);
 

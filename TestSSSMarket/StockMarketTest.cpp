@@ -106,26 +106,24 @@ TEST(StockMarket, All_Share_Index)
 {
 	stockMarket->CreateStockMarketData();
 
+	// No trades so should equal zero
+	DOUBLES_EQUAL(0, stockMarket->CalculateAllShareIndex(), Value_Tolerance);
+
 	StockMarket::StockTrade* trade = new StockMarket::StockTrade("TEA", 1526570001, 10, StockMarket::BUY, 5);
 	stockMarket->RecordTrade(trade);
-
 	trade = new StockMarket::StockTrade("TEA", 1526570016, 10, StockMarket::BUY, 10);
 	stockMarket->RecordTrade(trade);
-
 	trade = new StockMarket::StockTrade("TEA", 1526570017, 20, StockMarket::BUY, 5);
 	stockMarket->RecordTrade(trade);
+	DOUBLES_EQUAL(6.25, stockMarket->CalculateAllShareIndex(), Value_Tolerance);
+
 
 	trade = new StockMarket::StockTrade("GIN", 1526570001, 10, StockMarket::BUY, 5);
 	stockMarket->RecordTrade(trade);
-
 	trade = new StockMarket::StockTrade("GIN", 1526570016, 10, StockMarket::BUY, 10);
 	stockMarket->RecordTrade(trade);
-
 	trade = new StockMarket::StockTrade("GIN", 1526570017, 20, StockMarket::BUY, 5);
 	stockMarket->RecordTrade(trade);
 
-	DOUBLES_EQUAL(6.25, stockMarket->CalculateVWSP("TEA",0), Value_Tolerance);
-	DOUBLES_EQUAL(6.25, stockMarket->CalculateVWSP("GIN",0), Value_Tolerance);
 	DOUBLES_EQUAL(6.25, stockMarket->CalculateAllShareIndex(), Value_Tolerance);
-
 }
