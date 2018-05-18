@@ -13,6 +13,7 @@ void DisplayOptions(void);
 void AddTrade(StockMarket* market);
 void DisplayVWSP(StockMarket* market);
 void ViewTrades(StockMarket* market);
+void DisplayAllShareIndex(StockMarket* market);
 
 int main(void)
 {
@@ -35,7 +36,7 @@ int main(void)
 		case 1: AddTrade(market); break;
 		case 2: ViewTrades(market); break;
 		case 3: DisplayVWSP(market); break;
-		case 4: exit = true; break;
+		case 4: DisplayAllShareIndex(market); break;
 		}
 	}
 
@@ -104,6 +105,18 @@ void DisplayVWSP(StockMarket* market)
 void ViewTrades(StockMarket* market)
 {
 	market->PrintAllTradesToConsole();
+
+	DisplayOptions();
+}
+
+void DisplayAllShareIndex(StockMarket* market)
+{
+
+	cout << "All share Index Menu\n";
+
+	double asi = market->CalculateAllShareIndex();
+
+	cout << "Currently: " << asi << endl;
 
 	DisplayOptions();
 }
