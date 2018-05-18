@@ -100,19 +100,20 @@ double Stocks::CalculateDividendYield(int price)
 {
 	double dy = 0.0;
 
-	// Price cannot be zero
-	if(price>0 &&_last_dividend>-1 &&_fixed_dividend>-1 && _par_value>-1)
+	if( price<1 || (price>Maximum_Price_Input))
 	{
-		switch(_stock_type)
-		{
-			case COMMON: dy = (double)_last_dividend/price; break;
-			case PREFERRED:
-				dy = (double)_fixed_dividend/100;
-				dy  =(double)dy*_par_value;
-				dy = (double)dy/price;
-				break;
-			default: break;
-		}
+		throw out_of_range("CalculateDividendYield price");
+	}
+
+	switch(_stock_type)
+	{
+		case COMMON: dy = (double)_last_dividend/price; break;
+		case PREFERRED:
+			dy = (double)_fixed_dividend/100;
+			dy  =(double)dy*_par_value;
+			dy = (double)dy/price;
+			break;
+		default: break;
 	}
 
 	return dy;
@@ -127,10 +128,13 @@ double Stocks::CalculatePERatio(int price)
 {
 	double pe = 0.0;
 
-	if(price>-1 &&_last_dividend>0 )
+	if( price<1 || (price>Maximum_Price_Input))
 	{
-		pe = price/_last_dividend;
+		throw out_of_range("CalculateDividendYield price");
 	}
+
+	pe = price/_last_dividend;
+
 
 	return pe;
 }

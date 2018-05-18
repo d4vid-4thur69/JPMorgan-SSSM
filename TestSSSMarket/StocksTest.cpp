@@ -43,6 +43,39 @@ const double Pref_Div_Yield_4 = Pref_Numerator/(double)Price_4;
 const double Pref_Div_Yield_5 = Pref_Numerator/(double)Price_5;
 const double Pref_Div_Yield_6 = Pref_Numerator/(double)Price_6;
 
+
+TEST_GROUP(Stocks_Create)
+{
+  void setup()
+  {
+
+  }
+  void teardown()
+  {
+
+  }
+};
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  constructor arguments range check
+//
+//////////////////////////////////////////////////////////////////////////////
+TEST(Stocks_Create, OutOfRange)
+{
+	CHECK_THROWS(out_of_range, new Stocks("ALE", 2, 0, 0, 0) );
+	CHECK_THROWS(out_of_range, new Stocks("ALE", -1, 0, 0, 0) );
+
+	CHECK_THROWS(out_of_range, new Stocks("ALE", 0, Stocks::Maximum_Last_Dividend+1, 0, 0) );
+	CHECK_THROWS(out_of_range, new Stocks("ALE", 0, -1, 100, 100) );
+
+	CHECK_THROWS(out_of_range, new Stocks("ALE", 0, 0, Stocks::Maximum_Fixed_Dividend+1, 0) );
+	CHECK_THROWS(out_of_range, new Stocks("ALE", 0, 0, -1, 100) );
+
+	CHECK_THROWS(out_of_range, new Stocks("ALE", 0, 0, 0, Stocks::Maximum_Par_Value+1) );
+	CHECK_THROWS(out_of_range, new Stocks("ALE", 0, 0, 0, -1) );
+}
+
 TEST_GROUP(Stocks_Common)
 {
   Stocks* stocks;
@@ -66,6 +99,7 @@ TEST(Stocks_Common, CheckInstanceCreated)
 {
 	CHECK_EQUAL(Smb_Common, stocks->GetSymbol());
 	CHECK_EQUAL(Stocks::COMMON, stocks->GetType());
+
 	LONGS_EQUAL(Comm_L_Dividend, stocks->GetLastDividend());
 	LONGS_EQUAL(Comm_F_Dividend, stocks->GetFixedDividend());
 	LONGS_EQUAL(Comm_P_Value, stocks->GetParValue());
@@ -78,8 +112,10 @@ TEST(Stocks_Common, CheckInstanceCreated)
 //////////////////////////////////////////////////////////////////////////////
 TEST(Stocks_Common, CalculateDividendYield)
 {
-	DOUBLES_EQUAL(Comm_Div_Yield_Special, stocks->CalculateDividendYield(Price_1), Value_Tolerance);
-	DOUBLES_EQUAL(Comm_Div_Yield_Special, stocks->CalculateDividendYield(Price_2), Value_Tolerance);
+	CHECK_THROWS(out_of_range, stocks->CalculateDividendYield(Price_1));
+	CHECK_THROWS(out_of_range, stocks->CalculateDividendYield(Price_2));
+	CHECK_THROWS(out_of_range, stocks->CalculateDividendYield(Price_6+1));
+
 	DOUBLES_EQUAL(Comm_Div_Yield_3, stocks->CalculateDividendYield(Price_3), Value_Tolerance);
 	DOUBLES_EQUAL(Comm_Div_Yield_4, stocks->CalculateDividendYield(Price_4), Value_Tolerance);
 	DOUBLES_EQUAL(Comm_Div_Yield_5, stocks->CalculateDividendYield(Price_5), Value_Tolerance);
@@ -93,8 +129,8 @@ TEST(Stocks_Common, CalculateDividendYield)
 //////////////////////////////////////////////////////////////////////////////
 TEST(Stocks_Common, CalculatePERatio)
 {
-	DOUBLES_EQUAL(0.0, stocks->CalculatePERatio(Price_1), Value_Tolerance);
-	DOUBLES_EQUAL(0.0, stocks->CalculatePERatio(-1), Value_Tolerance);
+	CHECK_THROWS(out_of_range, stocks->CalculatePERatio(Price_1));
+	CHECK_THROWS(out_of_range, stocks->CalculatePERatio(Price_2));
 }
 
 TEST_GROUP(Stocks_Preferred)
@@ -120,6 +156,7 @@ TEST(Stocks_Preferred, CheckInstanceCreated)
 {
 	CHECK_EQUAL(Smb_Preferred, stocks->GetSymbol());
 	CHECK_EQUAL(Stocks::PREFERRED, stocks->GetType());
+
 	LONGS_EQUAL(Pref_L_Dividend, stocks->GetLastDividend());
 	LONGS_EQUAL(Pref_F_Dividend, stocks->GetFixedDividend());
 	LONGS_EQUAL(Pref_P_Value, stocks->GetParValue());
@@ -132,42 +169,12 @@ TEST(Stocks_Preferred, CheckInstanceCreated)
 //////////////////////////////////////////////////////////////////////////////
 TEST(Stocks_Preferred, CalculateDividendYield)
 {
-	DOUBLES_EQUAL(Pref_Div_Yield_Special, stocks->CalculateDividendYield(Price_1), Value_Tolerance);
-	DOUBLES_EQUAL(Pref_Div_Yield_Special, stocks->CalculateDividendYield(Price_2), Value_Tolerance);
+	CHECK_THROWS(out_of_range, stocks->CalculateDividendYield(Price_1));
+	CHECK_THROWS(out_of_range, stocks->CalculateDividendYield(Price_2));
+	CHECK_THROWS(out_of_range, stocks->CalculateDividendYield(Price_6+1));
+
 	DOUBLES_EQUAL(Pref_Div_Yield_3, stocks->CalculateDividendYield(Price_3), Value_Tolerance);
 	DOUBLES_EQUAL(Pref_Div_Yield_4, stocks->CalculateDividendYield(Price_4), Value_Tolerance);
 	DOUBLES_EQUAL(Pref_Div_Yield_5, stocks->CalculateDividendYield(Price_5), Value_Tolerance);
 	DOUBLES_EQUAL(Pref_Div_Yield_6, stocks->CalculateDividendYield(Price_6), Value_Tolerance);
-}
-
-TEST_GROUP(Stocks_Runtime)
-{
-  void setup()
-  {
-
-  }
-  void teardown()
-  {
-
-  }
-};
-
-///////////////////////////////////////////////////////////////////////////////
-//
-//  constructor arguments range check
-//
-//////////////////////////////////////////////////////////////////////////////
-TEST(Stocks_Runtime, OutOfRange)
-{
-	CHECK_THROWS(out_of_range, new Stocks("ALE", 2, 0, 0, 0) );
-	CHECK_THROWS(out_of_range, new Stocks("ALE", -1, 0, 0, 0) );
-
-	CHECK_THROWS(out_of_range, new Stocks("ALE", 0, Stocks::Maximum_Last_Dividend+1, 0, 0) );
-	CHECK_THROWS(out_of_range, new Stocks("ALE", 0, -1, 100, 100) );
-
-	CHECK_THROWS(out_of_range, new Stocks("ALE", 0, 0, Stocks::Maximum_Fixed_Dividend+1, 0) );
-	CHECK_THROWS(out_of_range, new Stocks("ALE", 0, 0, -1, 100) );
-
-	CHECK_THROWS(out_of_range, new Stocks("ALE", 0, 0, 0, Stocks::Maximum_Par_Value+1) );
-	CHECK_THROWS(out_of_range, new Stocks("ALE", 0, 0, 0, -1) );
 }
