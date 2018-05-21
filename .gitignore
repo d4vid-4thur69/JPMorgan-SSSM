@@ -23,7 +23,8 @@
 # Compiled Static libraries
 *.lai
 *.la
-*.a
+*SSSMarket/Debug/*.a
+*SSSMarket/Release/*.a
 *.lib
 
 # Executables
