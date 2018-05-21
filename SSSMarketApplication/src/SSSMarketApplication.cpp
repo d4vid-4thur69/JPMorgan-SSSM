@@ -85,7 +85,7 @@ void AddTrade(StockMarket* market)
 	{
 		market->RecordTrade(trade);
 	}
-	catch(out_of_range error)
+	catch(out_of_range &error)
 	{
 		cout << error.what() << endl;
 		DisplayOptions();
