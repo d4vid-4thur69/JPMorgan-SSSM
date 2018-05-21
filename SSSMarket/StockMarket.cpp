@@ -4,6 +4,7 @@
 #include <ctime>
 #include <numeric>
 #include <cmath>
+#include <stdexcept>
 
 using namespace std;
 
@@ -75,6 +76,10 @@ void StockMarket::RecordTrade(StockMarket::StockTrade* trade)
 		{
 			_market_trading.push_back(trade);
 		}
+		else
+		{
+			throw out_of_range("Invalid trade");
+		}
 	}
 }
 
@@ -94,6 +99,22 @@ bool StockMarket::StockTradeValid(StockTrade* trade)
 		// de-referrence iterator to check symbol string
 		if( trade->_sym == ((Stocks*) *it_stocks)->GetSymbol() )
 		{
+			// check quantity -valid 1-Stocks::Maximum_Transaction_Input
+			if( (trade->_quantity < Stocks::Minimum_General_Input) || (trade->_quantity > Stocks::Maximum_Transaction_Input) )
+			{
+				break;
+			}
+			// check price -valid 1-Stocks::Maximum_Price_Input
+			if( (trade->_price < Stocks::Minimum_General_Input) || (trade->_price > Stocks::Maximum_Price_Input) )
+			{
+				break;
+			}
+			// check kind -valid 0-BUY 1-SELL
+			if( (trade->_kind < BUY) || (trade->_kind > SELL) )
+			{
+				break;
+			}
+
 			trade_valid = true;
 			break;
 		}
@@ -153,10 +174,12 @@ double StockMarket::CalculateVWSP(string symbol, time_t request_time, int period
 	vector<StockTrade*> trading_by_symbol;
 	vector<StockTrade*>::iterator it_market_trading =  _market_trading.begin();
 
+	// Iterate through _market_trading to check if symbol is valid
 	while(it_market_trading != _market_trading.end())
 	{
 		if( request_time != 0 )
 		{
+			// single type request has a trade time check
 			if( (symbol== ((StockTrade*) *it_market_trading)->_sym)
 				&& (request_time -((StockTrade*) *it_market_trading)->_time) < period )
 			{
@@ -165,6 +188,7 @@ double StockMarket::CalculateVWSP(string symbol, time_t request_time, int period
 		}
 		else
 		{
+			// all type request does not have a trade time check
 			if( (symbol== ((StockTrade*) *it_market_trading)->_sym) )
 			{
 				trading_by_symbol.push_back((StockTrade*) *it_market_trading);
@@ -175,19 +199,26 @@ double StockMarket::CalculateVWSP(string symbol, time_t request_time, int period
 
 	unsigned symbol_trades = trading_by_symbol.size();
 
+	// perform the volume weighted stock price calculation
 	if(symbol_trades>0)
 	{
 		sum_quantity = 0;
 
+		// calculate numerator and denominator
 		for(unsigned i=0; i<symbol_trades; i++)
 		{
 			sum_trade_by_quantity += (trading_by_symbol.at(i)->_price * trading_by_symbol.at(i)->_quantity);
 			sum_quantity += trading_by_symbol.at(i)->_quantity;
 		}
 
-		if( sum_trade_by_quantity > 0 )
+		// check denominator is not zero
+		if( sum_quantity > 0 )
 		{
 			VWSP = (double)sum_trade_by_quantity/sum_quantity;
+		}
+		else
+		{
+			throw out_of_range("CalculateVWSP divide invalid");
 		}
 	}
 

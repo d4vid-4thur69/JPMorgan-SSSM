@@ -18,10 +18,11 @@ public:
 	static const int Maximum_Price_Input	= 100000000;
 	static const int Maximum_Transaction_Input	= 100000000;
 	static const int Maximum_Last_Dividend	= 100000000;
-
 	// Numerator of a percentage
 	static const int Maximum_Fixed_Dividend	= 100000000;
 	static const int Maximum_Par_Value	= 100000000;
+
+	static const int Minimum_General_Input	= 1;
 
 	enum StockType{COMMON, PREFERRED};
 	Stocks(string symbol="", int type=COMMON, int ldividend=0, int fdividend=0, int pvalue=100);

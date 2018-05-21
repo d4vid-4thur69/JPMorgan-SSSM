@@ -27,10 +27,10 @@ public:
 		string _sym;
 		time_t _time;
 		int _quantity;
-		TradeKind _kind;
+		int _kind;
 		int _price;
 
-		StockTrade(string sym,time_t time,int quantity,TradeKind kind,int price)
+		StockTrade(string sym,time_t time,int quantity,int kind,int price)
 		{
 			 _sym=sym;
 			 _time=time;

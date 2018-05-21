@@ -1,7 +1,7 @@
 #include "StockMarket.h"
 
 #include <ctime>
-
+#include <stdexcept>
 
 //CppUTest includes should be after your and system includes
 #include "CppUTest/TestHarness.h"
@@ -28,8 +28,55 @@ TEST(StockMarket, CreateStockMarketData)
 	LONGS_EQUAL(5, stocks);
 }
 
+TEST(StockMarket, RecordTrade_Invalid)
+{
+	time_t timer;
 
-TEST(StockMarket, RecordTrade)
+	// No stocks created so stock symbols
+	StockMarket::StockTrade* trade = new StockMarket::StockTrade("TEA", time(&timer), 200, StockMarket::BUY, 80);
+	CHECK_THROWS(out_of_range, stockMarket->RecordTrade(trade));
+	delete trade;
+
+	// Create stocks
+	stockMarket->CreateStockMarketData();
+
+	// Invalid stock symbol
+	trade = new StockMarket::StockTrade("ZZZ", time(&timer), 200, StockMarket::BUY, 80);
+	CHECK_THROWS(out_of_range, stockMarket->RecordTrade(trade));
+	delete trade;
+
+	// Invalid quantity Stocks::Minimum_General_Input-1 (0)
+	trade = new StockMarket::StockTrade("TEA", time(&timer), Stocks::Minimum_General_Input-1, StockMarket::BUY, 20);
+	CHECK_THROWS(out_of_range, stockMarket->RecordTrade(trade));
+	delete trade;
+
+	// Invalid quantity Stocks::Maximum_Transaction_Input+1
+	trade = new StockMarket::StockTrade("TEA", time(&timer), (Stocks::Maximum_Transaction_Input+1), StockMarket::BUY, 20);
+	CHECK_THROWS(out_of_range, stockMarket->RecordTrade(trade));
+	delete trade;
+
+	// Invalid price StockMarket::BUY, Stocks::Minimum_General_Input-1 (0)
+	trade = new StockMarket::StockTrade("ALE", time(&timer), 200, StockMarket::BUY, Stocks::Minimum_General_Input-1);
+	CHECK_THROWS(out_of_range, stockMarket->RecordTrade(trade));
+	delete trade;
+
+	// Invalid price  Stocks::Maximum_Price_Input+1
+	trade = new StockMarket::StockTrade("ALE", time(&timer), 200, StockMarket::BUY, Stocks::Maximum_Price_Input+1);
+	CHECK_THROWS(out_of_range, stockMarket->RecordTrade(trade));
+	delete trade;
+
+	// Invalid TradeKind _kind < BUY
+	trade = new StockMarket::StockTrade("GIN", time(&timer), 200, -1, Stocks::Maximum_Price_Input+1);
+	CHECK_THROWS(out_of_range, stockMarket->RecordTrade(trade));
+	delete trade;
+
+	// Invalid TradeKind _kind > SELL
+	trade = new StockMarket::StockTrade("GIN", time(&timer), 200, 2, Stocks::Maximum_Price_Input+1);
+	CHECK_THROWS(out_of_range, stockMarket->RecordTrade(trade));
+	delete trade;
+}
+
+TEST(StockMarket, RecordTrade_Valid)
 {
 	time_t timer;
 	stockMarket->CreateStockMarketData();
@@ -43,35 +90,10 @@ TEST(StockMarket, RecordTrade)
 	LONGS_EQUAL(2, stockMarket->GetMarketTradingNumber());
 }
 
-TEST(StockMarket, StockTradeValid)
-{
-	time_t timer;
 
-	// No stocks, no symbols
-	StockMarket::StockTrade* trade = new StockMarket::StockTrade("TEA", time(&timer), 200, StockMarket::BUY, 80);
-	stockMarket->RecordTrade(trade);
-	LONGS_EQUAL(0, stockMarket->GetMarketTradingNumber());
-
-	delete trade;
-
-	stockMarket->CreateStockMarketData();
-
-	// Invalid stock symbol
-	trade = new StockMarket::StockTrade("ZZZ", time(&timer), 200, StockMarket::BUY, 80);
-	stockMarket->RecordTrade(trade);
-	LONGS_EQUAL(0, stockMarket->GetMarketTradingNumber());
-
-	delete trade;
-
-	// Valid stock symbol
-	trade = new StockMarket::StockTrade("ALE", time(&timer), 200, StockMarket::BUY, 80);
-	stockMarket->RecordTrade(trade);
-	trade = new StockMarket::StockTrade("JOE", time(&timer), 200, StockMarket::BUY, 80);
-	stockMarket->RecordTrade(trade);
-	LONGS_EQUAL(2, stockMarket->GetMarketTradingNumber());
-}
-
-TEST(StockMarket, Calculate_VWSP)
+// NB any trade record entered with a quantity zero in invalid.
+// See StockTradeInvalid tests
+TEST(StockMarket, CalculateVWSP)
 {
 	stockMarket->CreateStockMarketData();
 
@@ -100,10 +122,11 @@ TEST(StockMarket, Calculate_VWSP)
 	DOUBLES_EQUAL(16.666666, stockMarket->CalculateVWSP("JOE",1526570300,300), Value_Tolerance);
 	DOUBLES_EQUAL(15.0, stockMarket->CalculateVWSP("GIN",1526570300,300), Value_Tolerance);
 
+	// Calculate for all TEA irrespective of timestamp
 	DOUBLES_EQUAL(10.576923, stockMarket->CalculateVWSP("TEA",0,0), Value_Tolerance);
 }
 
-TEST(StockMarket, All_Share_Index)
+TEST(StockMarket, CalculateAllShareIndex)
 {
 	stockMarket->CreateStockMarketData();
 
@@ -128,4 +151,3 @@ TEST(StockMarket, All_Share_Index)
 
 	DOUBLES_EQUAL(6.25, stockMarket->CalculateAllShareIndex(), Value_Tolerance);
 }
-

@@ -93,7 +93,7 @@ int Stocks::GetParValue(void) const
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-//  Two calculation for dividend yield
+//  Common and Preferred calculations for dividend yield
 //
 ///////////////////////////////////////////////////////////////////////////////
 double Stocks::CalculateDividendYield(int price)
@@ -109,7 +109,7 @@ double Stocks::CalculateDividendYield(int price)
 	{
 		case COMMON: dy = (double)_last_dividend/price; break;
 		case PREFERRED:
-			dy = (double)_fixed_dividend/100;
+			dy = (double)_fixed_dividend/100;	// percent value
 			dy  =(double)dy*_par_value;
 			dy = (double)dy/price;
 			break;
@@ -134,7 +134,6 @@ double Stocks::CalculatePERatio(int price)
 	}
 
 	pe = price/_last_dividend;
-
 
 	return pe;
 }

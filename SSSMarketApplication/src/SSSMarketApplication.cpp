@@ -7,6 +7,8 @@
 
 #include <string>
 #include <iostream>
+#include <stdexcept>
+
 using namespace std;
 
 void DisplayOptions(void);
@@ -78,10 +80,19 @@ void AddTrade(StockMarket* market)
 	}
 
 	StockMarket::StockTrade* trade = new StockMarket::StockTrade(symbol, time(&timer), quantity, trade_type, price);
-	market->RecordTrade(trade);
+
+	try
+	{
+		market->RecordTrade(trade);
+	}
+	catch(out_of_range error)
+	{
+		cout << error.what() << endl;
+		DisplayOptions();
+		return;
+	}
 
 	market->PrintAllTradesToConsole();
-
 	DisplayOptions();
 }
 
