@@ -1,33 +1,56 @@
-*/Debug
-*/Release
-.m
+RemoreSystemsTempFiles/
+SSSMarket/Debug/
+SSSMarketApplication/Debug/
+TestSSSMarket/Debug/
 
-# Prerequisites
-*.d
+SSSMarket/Release/
+SSSMarketApplication/Release/
+TestSSSMarket/Release/
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+.gitignore~
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
 
-# Precompiled Headers
-*.gch
-*.pch
+# External tool builders
+.externalToolBuilders/
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+# Locally stored "Eclipse launch configurations"
+*.launch
 
-# Compiled Static libraries
-*.lai
-*.la
-*SSSMarket/Debug/*.a
-*SSSMarket/Release/*.a
-*.lib
+# CDT-specific (C/C++ Development Tooling)
+.cproject
 
-# Executables
-*.exe
-*.out
-*.app
+# CDT- autotools 
+.autotools
+
+# Java annotation processor (APT)
+.factorypath
+
+# PDT-specific (PHP Development Tools)
+.buildpath
+
+# sbteclipse plugin
+.target
+
+# Tern plugin
+.tern-project
+
+# TeXlipse plugin
+.texlipse
+
+# STS (Spring Tool Suite)
+.springBeans
+
+# Code Recommenders
+.recommenders/
+
+
